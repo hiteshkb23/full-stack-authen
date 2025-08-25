@@ -1,3 +1,4 @@
+import Link from "next/link";
 // export default async function UserProfile({ params }: any) {
 export default async function UserProfile({ params }: { params: { id: string } }) {
     return (
@@ -99,7 +100,8 @@ export default async function UserProfile({ params }: { params: { id: string } }
                     <div className="space-y-4">
                         <div className="flex flex-col sm:flex-row gap-3">
                             {/* Back to Profile Button */}
-                            <a
+                            {/* used link instead of a below */}
+                            <Link
                                 href="/profile"
                                 className="flex-1 py-3 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center"
                             >
@@ -109,7 +111,7 @@ export default async function UserProfile({ params }: { params: { id: string } }
                                     </svg>
                                     <span>Back to Profile</span>
                                 </div>
-                            </a>
+                            </Link>
 
                             {/* Edit Profile Button */}
                             <button className="flex-1 py-3 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
