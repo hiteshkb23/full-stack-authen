@@ -1,5 +1,6 @@
 "use client";
-import axios from "axios";
+// import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -12,36 +13,76 @@ export default function UserProfile() {
     const [loading, setLoading] = useState(false);
     const [userDetailsLoading, setUserDetailsLoading] = useState(false);
 
+    // const logout = async () => {
+    //     try {
+    //         setLoading(true);
+    //         await axios.get('/api/users/logout');
+    //         toast.success('Logout successful');
+    //         router.push('/login');
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         toast.error(error.message);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    // const getUserDetails = async () => {
+    //     try {
+    //         setUserDetailsLoading(true);
+    //         const res = await axios.get('/api/users/me');
+    //         console.log(res.data);
+    //         setUserData(res.data.data); // Store full user object
+    //         setData(res.data.data._id); // Keep existing functionality
+    //         toast.success('User details loaded successfully');
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         toast.error(error.message);
+    //     } finally {
+    //         setUserDetailsLoading(false);
+    //     }
+    // };
+
+    /////////////////
     const logout = async () => {
-        try {
-            setLoading(true);
-            await axios.get('/api/users/logout');
-            toast.success('Logout successful');
-            router.push('/login');
-        } catch (error: any) {
-            console.log(error.message);
+    try {
+        setLoading(true);
+        await axios.get('/api/users/logout');
+        toast.success('Logout successful');
+        router.push('/login');
+    } catch (error) { // Corrected catch block
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data?.error || "Logout failed");
+        } else if (error instanceof Error) {
             toast.error(error.message);
-        } finally {
-            setLoading(false);
+        } else {
+            toast.error("An unexpected error occurred");
         }
-    };
+    } finally {
+        setLoading(false);
+    }
+};
 
-    const getUserDetails = async () => {
-        try {
-            setUserDetailsLoading(true);
-            const res = await axios.get('/api/users/me');
-            console.log(res.data);
-            setUserData(res.data.data); // Store full user object
-            setData(res.data.data._id); // Keep existing functionality
-            toast.success('User details loaded successfully');
-        } catch (error: any) {
-            console.log(error.message);
+const getUserDetails = async () => {
+    try {
+        setUserDetailsLoading(true);
+        const res = await axios.get('/api/users/me');
+        console.log(res.data);
+        setUserData(res.data.data); 
+        setData(res.data.data._id); 
+        toast.success('User details loaded successfully');
+    } catch (error) { // Corrected catch block
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data?.error || "Failed to get details");
+        } else if (error instanceof Error) {
             toast.error(error.message);
-        } finally {
-            setUserDetailsLoading(false);
+        } else {
+            toast.error("An unexpected error occurred");
         }
-    };
-
+    } finally {
+        setUserDetailsLoading(false);
+    }
+};
     return (
         <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 flex items-center justify-center px-4 py-8">
             {/* Background decoration */}

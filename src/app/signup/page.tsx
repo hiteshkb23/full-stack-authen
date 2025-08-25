@@ -2,7 +2,8 @@
 import Link from "next/link";
 import React ,{useEffect} from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+// import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import toast from "react-hot-toast";
 
 export default function SignupPage(){
@@ -16,20 +17,46 @@ export default function SignupPage(){
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
     const [loading,setLoading] = React.useState(false);
 
-    const onSignup = async () => {
-        try{
-            setLoading(true);
-            const response = await axios.post("/api/users/signup",user);
-            console.log("signup success", response.data);
-            router.push("/login");
+    // const onSignup = async () => {
+    //     try{
+    //         setLoading(true);
+    //         const response = await axios.post("/api/users/signup",user);
+    //         console.log("signup success", response.data);
+    //         router.push("/login");
 
-        }catch(error:any){
-            console.log("signup failed",error.message);
+    //     }catch(error:any){
+    //         console.log("signup failed",error.message);
+    //         toast.error(error.message);
+    //     }finally{
+    //         setLoading(false);
+    //     }
+    // }
+
+    /////////////////////////
+    const onSignup = async () => {
+    try {
+        setLoading(true);
+        const response = await axios.post("/api/users/signup", user);
+        console.log("signup success", response.data);
+        toast.success("Signup successful! Please login."); // Give user feedback
+        router.push("/login");
+
+    } catch (error) {
+        console.log("Signup failed", error);
+        
+        // Check if it's an Axios error to get the server's message
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data?.error || "Signup failed");
+        } else if (error instanceof Error) {
             toast.error(error.message);
-        }finally{
-            setLoading(false);
+        } else {
+            toast.error("An unexpected error occurred");
         }
+        
+    } finally {
+        setLoading(false);
     }
+    };
 
     useEffect(() => {
         if(user.email.length > 0 && user.password.length > 0 && user.username.length > 0){

@@ -1,6 +1,7 @@
 "use client";
 
-import axios from "axios";
+// import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -10,19 +11,40 @@ export default function VerifyEmailPage() {
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const verifyUserEmail = async () => {
-        try {
-            setLoading(true);
-            await axios.post('/api/users/verifyemail', { token });
-            setVerified(true);
-        } catch (error: any) {
-            setError(true);
-            console.log(error.response?.data);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const verifyUserEmail = async () => {
+    //     try {
+    //         setLoading(true);
+    //         await axios.post('/api/users/verifyemail', { token });
+    //         setVerified(true);
+    //     } catch (error: any) {
+    //         setError(true);
+    //         console.log(error.response?.data);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
+    //////////////////
+    const verifyUserEmail = async () => {
+    try {
+        setLoading(true);
+        await axios.post('/api/users/verifyemail', { token });
+        setVerified(true);
+        setError(false); // Explicitly set error to false on success
+    } catch (error) {
+        setError(true);
+        if (isAxiosError(error)) {
+            // Log the specific error message from the server
+            console.error("Verification failed:", error.response?.data?.error || "Axios error");
+        } else {
+            // Log a generic error message
+            console.error("An unexpected error occurred:", error);
+        }
+    } finally {
+        setLoading(false);
+    }
+    };
+    
     useEffect(() => {
         const urlToken = window.location.search.split("=")[1];
         setToken(urlToken || "");

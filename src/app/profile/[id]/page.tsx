@@ -1,4 +1,5 @@
-export default async function UserProfile({ params }: any) {
+// export default async function UserProfile({ params }: any) {
+export default async function UserProfile({ params }: { params: { id: string } }) {
     return (
         <div className="min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-fuchsia-900 flex items-center justify-center px-4 py-8">
             {/* Background decoration */}
