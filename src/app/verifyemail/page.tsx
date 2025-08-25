@@ -3,7 +3,7 @@
 // import axios from "axios";
 import axios, { isAxiosError } from "axios";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 export default function VerifyEmailPage() {
     const [token, setToken] = useState("");
@@ -25,7 +25,7 @@ export default function VerifyEmailPage() {
     // };
 
     //////////////////
-    const verifyUserEmail = async () => {
+    const verifyUserEmail = useCallback(async () => {
     try {
         setLoading(true);
         await axios.post('/api/users/verifyemail', { token });
@@ -43,7 +43,7 @@ export default function VerifyEmailPage() {
     } finally {
         setLoading(false);
     }
-    };
+    },[token]);
     
     useEffect(() => {
         const urlToken = window.location.search.split("=")[1];
@@ -54,7 +54,7 @@ export default function VerifyEmailPage() {
         if (token.length > 0) {
             verifyUserEmail();
         }
-    }, [token]);
+    }, [token, verifyUserEmail]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-orange-900 via-amber-900 to-yellow-900 flex items-center justify-center px-4 py-8">
