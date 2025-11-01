@@ -1,33 +1,30 @@
-"use client";
+//
+//when ever the link in the mail send for verification is clicked
+//user will be redirected to this page
+//Its job is to automatically read a verification token from the URL,send it to
+//a backend API, and show the user whether the verification was successful or not.
 
-// import axios from "axios";
+"use client";
 import axios, { isAxiosError } from "axios";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 
 export default function VerifyEmailPage() {
+    //Stores the verification token string
     const [token, setToken] = useState("");
+    //confirms the token is valid
     const [verified, setVerified] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // const verifyUserEmail = async () => {
-    //     try {
-    //         setLoading(true);
-    //         await axios.post('/api/users/verifyemail', { token });
-    //         setVerified(true);
-    //     } catch (error: any) {
-    //         setError(true);
-    //         console.log(error.response?.data);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    //////////////////
+    //This is responsible for communicating with the backend
+    //It's wrapped in useCallback to prevent it from being recreated on every render,
+    //which optimizes its use in the second useEffect.
     const verifyUserEmail = useCallback(async () => {
     try {
         setLoading(true);
+        //It makes an HTTP POST request to the /api/users/verifyemail endpoint,
+        //sending the token from the state.If successful (try block): It sets setVerified(true)
         await axios.post('/api/users/verifyemail', { token });
         setVerified(true);
         setError(false); // Explicitly set error to false on success
@@ -45,17 +42,25 @@ export default function VerifyEmailPage() {
     }
     },[token]);
     
+    //This effect runs one time as soon as the component loads.
+    //It accesses window.location.search to get the query part of the URL
+    //It splits the string by the = sign and takes the second part as the token.
+    //then sets the token
     useEffect(() => {
         const urlToken = window.location.search.split("=")[1];
         setToken(urlToken || "");
     }, []);
 
+    //This effect "watches" the token state.If a token exists, it immediately calls the 
+    //verifyUserEmail() function to start the verification process.
     useEffect(() => {
         if (token.length > 0) {
             verifyUserEmail();
         }
     }, [token, verifyUserEmail]);
 
+    //contain block which shows the different message based on the component's
+    //state (loading, verified, error).
     return (
         <div className="min-h-screen bg-gradient-to-br from-orange-900 via-amber-900 to-yellow-900 flex items-center justify-center px-4 py-8">
             {/* Background decoration */}
@@ -218,4 +223,29 @@ export default function VerifyEmailPage() {
             </div>
         </div>
     );
+
+/*
+    same as - >
+    return(
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+        <h1 className="text-4xl">Verify Email</h1>
+        <h2 className="p-2 bg-orange-500 text-black">{token ? `${token}` : "no token"}</h2>
+
+        {verified && (
+            <div>
+                <h2 className="text-2xl">Email Verified</h2>
+                <Link href="/login">
+                    Login
+                </Link>
+            </div>
+        )}
+        {error && (
+            <div>
+                <h2 className="text-2xl bg-red-500 text-black">Error</h2>
+                
+            </div>
+        )}
+    </div>
+    )
+*/
 }

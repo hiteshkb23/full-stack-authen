@@ -2,9 +2,14 @@ import mongoose from 'mongoose';
 
 export async function connect() {
     try{
+        //exclamatory marks removes the redline making sure MONGO_URI! exist
         mongoose.connect(process.env.MONGO_URI!);
+
+        //to check the connection
         const connection = mongoose.connection;
 
+        //connected is an event 
+        //using on we can listen various events
         connection.on('connected',() => {
             console.log('MongoDB connected successfully');
         })

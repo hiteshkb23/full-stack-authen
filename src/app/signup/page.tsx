@@ -1,44 +1,128 @@
+//
+//This code creates a client-side signup form
+
 "use client";
+//1
 import Link from "next/link";
 import React ,{useEffect} from "react";
+//2
 import { useRouter } from "next/navigation";
-// import axios from "axios";
 import axios, { isAxiosError } from "axios";
 import toast from "react-hot-toast";
 
-export default function SignupPage(){
-    const router = useRouter();
-    const [user,setUser] = React.useState({
 
+/*
+TO UNDERSTAND
+
+export default function SignupPage() {
+    const router = useRouter();
+    const [user, setUser] = React.useState({
+        email: "",
+        password: "",
+        username: "",
+    })
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+
+    const onSignup = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.post("/api/users/signup", user);
+            console.log("Signup success", response.data);
+            router.push("/login");
+            
+        } catch (error:any) {
+            console.log("Signup failed", error.message);
+            
+            toast.error(error.message);
+        }finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if(user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
+            setButtonDisabled(false);
+        } else {
+            setButtonDisabled(true);
+        }
+    }, [user]);
+
+
+    return (
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+        <h1>{loading ? "Processing" : "Signup"}</h1>
+        <hr />
+
+    --->input field for username
+        <label htmlFor="username">username</label>
+        <input 
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+            id="username"
+            type="text"
+            value={user.username}
+            onChange={(e) => setUser({...user, username: e.target.value})}
+            placeholder="username"
+        />
+
+    --->input field for email
+        <label htmlFor="email">email</label>
+        <input 
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+            id="email"
+            type="text"
+            value={user.email}
+            onChange={(e) => setUser({...user, email: e.target.value})}
+            placeholder="email"
+        />
+
+    --->input field for password
+        <label htmlFor="password">password</label>
+        <input 
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+            id="password"
+            type="password"
+            value={user.password}
+            onChange={(e) => setUser({...user, password: e.target.value})}
+            placeholder="password"
+        />
+
+        <button
+            onClick={onSignup}
+            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600">
+        {buttonDisabled ? "No signup" : "Signup"}
+        </button>
+
+        <Link href="/login">Visit login page</Link>
+        </div>
+    )
+
+}
+*/
+
+
+export default function SignupPage(){
+    //router to navigate
+    const router = useRouter();
+    //An object that stores the data from the form fields. It's initialized with empty strings.
+    const [user,setUser] = React.useState({
         email:"",
         username:"",
         password:"",
     })
+    //button to appear when values are entered
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
     const [loading,setLoading] = React.useState(false);
 
-    // const onSignup = async () => {
-    //     try{
-    //         setLoading(true);
-    //         const response = await axios.post("/api/users/signup",user);
-    //         console.log("signup success", response.data);
-    //         router.push("/login");
-
-    //     }catch(error:any){
-    //         console.log("signup failed",error.message);
-    //         toast.error(error.message);
-    //     }finally{
-    //         setLoading(false);
-    //     }
-    // }
-
-    /////////////////////////
+    //This async function is the core logic. It runs when the user clicks the signup button.
     const onSignup = async () => {
     try {
         setLoading(true);
+        //Send the 'user' state object to your backend API
         const response = await axios.post("/api/users/signup", user);
         console.log("signup success", response.data);
         toast.success("Signup successful! Please login."); // Give user feedback
+        //On success, redirect to the login page
         router.push("/login");
 
     } catch (error) {
@@ -58,6 +142,7 @@ export default function SignupPage(){
     }
     };
 
+    //checks all three fields and if length is greater than 0 then enable the signup button
     useEffect(() => {
         if(user.email.length > 0 && user.password.length > 0 && user.username.length > 0){
             setButtonDisabled(false);
@@ -210,3 +295,23 @@ export default function SignupPage(){
         </div>
     );
 }
+
+/*
+
+//1
+This import the Link component
+--->Here we have use Link instead of regular <a href..> tag because , it cacause a full-page reload.
+The browser would discard the current page, request a brand new HTML file from the server,
+and load it which is slow , feels clucky
+--->When a user clicks the Link, Next.js prevents the full-page reload. Instead,
+it just fetches the JavaScript needed for the /login page and swaps the components in the browser.
+This is called client-side navigation,and its a core feature of SPA build with Next.js
+
+//2
+(this router is different than route using in other project)
+--->The useRouter hook in Next.js is a client-side hook that allows you to programmatically change 
+routes and access routing information inside Client Components , Link is user driven and works when 
+the user clicks on it, where as router is condition driven . for ex when user clicks on signup 
+onSignup function is called, upon successful completion of signup, router will automatically navigate 
+you to the login page
+*/

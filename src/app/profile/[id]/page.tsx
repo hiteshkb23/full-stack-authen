@@ -1,5 +1,22 @@
 import Link from "next/link";
-// export default async function UserProfile({ params }: any) {
+//This code creates a dynamic profile page in a Next.js application
+//dynamic segments are created using folder-based routing with square brackets [] in the folder name
+//
+/*
+export default function UserProfile({params}: any) {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen py-2">
+            <h1>Profile</h1>
+            <hr />
+            <p className="text-4xl">Profile page 
+            <span className=" p-2 ml-2 rounded bg-orange-500 text-black">{params.id}</span>
+            </p>
+        </div>
+    )
+}
+*/
+
+//same but with lot more css
 export default async function UserProfile({ params }: { params: { id: string } }) {
     return (
         <div className="min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-fuchsia-900 flex items-center justify-center px-4 py-8">

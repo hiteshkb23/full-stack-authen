@@ -1,15 +1,90 @@
+//
+//This code defines an interactive login page
+
 "use client";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import axios from "axios";
 import axios, { isAxiosError } from "axios";
 import toast from "react-hot-toast";
 
+/*
+TO UNDERSTAND
+
+export default function LoginPage() {
+    const router = useRouter();
+    const [user, setUser] = React.useState({
+        email: "",
+        password: "",
+       
+    })
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+
+
+    const onLogin = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.post("/api/users/login", user);
+            console.log("Login success", response.data);
+            toast.success("Login success");
+            router.push("/profile");
+        } catch (error:any) {
+            console.log("Login failed", error.message);
+            toast.error(error.message);
+        } finally{
+        setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if(user.email.length > 0 && user.password.length > 0) {
+            setButtonDisabled(false);
+        } else{
+            setButtonDisabled(true);
+        }
+    }, [user]);
+
+    return (
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+        <h1>{loading ? "Processing" : "Login"}</h1>
+        <hr />
+        
+        <label htmlFor="email">email</label>
+        <input 
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+            id="email"
+            type="text"
+            value={user.email}
+            onChange={(e) => setUser({...user, email: e.target.value})}
+            placeholder="email"
+            />
+        <label htmlFor="password">password</label>
+        <input 
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+            id="password"
+            type="password"
+            value={user.password}
+            onChange={(e) => setUser({...user, password: e.target.value})}
+            placeholder="password"
+            />
+            <button
+            onClick={onLogin}
+            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600">Login here</button>
+            <Link href="/signup">Visit Signup page</Link>
+        </div>
+    )
+
+}
+*/
+
+
+//-----> signup and login client component are very similar
 export default function LoginPage(){
     const router = useRouter();
-    const [user,setUser] = React.useState({
 
+    //An object that stores the values from the input fields
+    const [user,setUser] = React.useState({
         email:"",
         password:"",
     })
@@ -17,31 +92,19 @@ export default function LoginPage(){
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
 
-    // const onLogin = async () => {
-    //     try{
-    //         setLoading(true);
-    //         const response = await axios.post("/api/users/login",user);
-    //         console.log("Login success",response.data);
-    //         toast.success("Login success");
-    //         router.push("/profile");
-    //     }catch(error:any){
-    //         console.log("Login failed",error.message);
-    //         toast.error(error.message);
-    //     }finally{
-    //         setLoading(false);
-    //     }
-    // }
-
+    //This async function is called when the user clicks the "Login here" button.
     const onLogin = async () => {
     try {
         setLoading(true);
+        //It uses the axios library to send an HTTP POST request to your backend API endpoint 
+        //at /api/users/login.It sends the user object (containing the email and password) as the data.
         const response = await axios.post("/api/users/login", user);
         console.log("Login success", response.data);
         toast.success("Login success");
         router.push("/profile");
-    } catch (error) { // The fix is here
+    } catch (error) { 
+        // The fix is here
         console.log("Login failed", error);
-        
         // Check if it's an Axios error to get the server's message
         if (isAxiosError(error)) {
             toast.error(error.response?.data?.error || "An error occurred");
@@ -56,6 +119,7 @@ export default function LoginPage(){
     }
     };
 
+    //enables the login button when email and password field are filled
     useEffect(() => {
         if(user.email.length > 0 && user.password.length > 0){
             setButtonDisabled(false);
@@ -65,6 +129,7 @@ export default function LoginPage(){
         }
     }, [user]);
 
+    //main functionality contain input field for email , password and login button
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center px-4 py-8">
             {/* Background decoration */}
